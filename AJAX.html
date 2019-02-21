@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JSON y AJAX</title>
+	<link rel="stylesheet" type="text/css" href="ajax.css">
+	<script>
+		function loadData(){
+			//crear peticiones
+			let xhr = new XMLHttpRequest();
+			//xhr.open("GET","url de mi git donde esta mi json");
+			xhr.open("GET","https://yvone.github.io/DAW/info-1.json")
+			xhr.onreadystatechange = function(){
+				console.log(this.readyState,this.status, this.statusText);
+			}
+			//procesar petición
+			xhr.onload = function(){
+				if(this.readyState === 4 && this.status === 200){
+					//Actualizar texto
+					//this sería mi respuesta
+					//Esconderemos el boton
+					console.log("Cambiando texto");
+					let data = JSON.parse(this.responseText);
+					let emptyDiv = document.getElementById("loaded-info")
+					//console.log(data);
+
+					let html = '';
+					data.forEach(function(pig){
+						html += '<p>'
+						html += pig.nombre + ' ' + pig.apellido
+						html += '</p>'
+					});
+
+					emptyDiv.insertAdjacentHTML('beforeend',html);
+
+				}
+				else{
+					//Quiere decir que la info no llego
+					alert("ERROR: "+this.status);
+				}
+			}
+
+			//modificar contenido
+			//modificar contenido
+			//enviar la petición
+		}
+		function Cat(){
+			let xhr = new XMLHttpRequest();
+			xhr.open("POST","http://10.24.43.221:3000/kittens");
+			xhr.setRequestHeader("content-type", "application/json");
+
+
+			xhr.onload = function(){
+				if(this.readyState === 4 && this.status === 201){
+					alert(this.responseText);
+				}
+				else
+				{
+					alert("ERROR: " + this.status);
+				}
+			};
+
+			xhr.onerror = function(){
+				alert("la conexión a fllado");
+			};
+
+			let name = document.getElementById('name').value;
+			let cuteness = document.getElementById('cuteness').value;
+			let color = document.getElementById('color').value;
+			let owner = document.getElementById('owner').value;
+			let explodes = document.getElementById('explodes').checked;
+
+			let data = {name, cuteness, color, owner, explodes};
+
+			xhr.send(JSON.stringify(data));
+
+		}
+	</script>
+</head>
+<body>
+	<h1>Json y Ajax</h1>
+	<h3>Permitir q ajax modifique</h3>
+	<button id="btn" type="button" onclick="loadData()">
+		Mostrar info sin recargar
+	</button>
+	<div id="loaded-info">
+		
+	</div>
+	<div>
+		<h5>Name</h5>
+		<input type="text" id="name">
+		<h5>Cuteness</h5>
+		<input type="number" id="cuteness">
+		<h5>Color</h5>
+		<input type="text" id="color">
+		<h5>Owner</h5>
+		<input type="text" id="owner">
+		<input type="checkbox" id="explodes">
+		<button id ="btn" type="button" onclick="Cat()">
+			Crear un gatito
+		</button>
+	</div>
+
+</body>
+</html>
